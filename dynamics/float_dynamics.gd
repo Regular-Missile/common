@@ -10,7 +10,8 @@ var velocity: float
 #A new comment thank you very much
 
 func initialize(_original_value: float) -> void:
-	pass
+	new_value = _original_value
+	previous_value = _original_value
 
 func update(_delta: float, _target_value: float, _velocity: float = 0.0) -> float:
 	if is_zero_approx(_velocity):
