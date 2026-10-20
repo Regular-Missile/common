@@ -19,7 +19,7 @@ func _run() -> void:
 	ProjectSettings.set_setting("startup/init_script_has_run", true)
 	ProjectSettings.save()
 	
-
+	_init_submodules()
 	_create_file_structure()
 	print("Startup Script: FileStructure Finished.")
 	_configure_project()
@@ -55,6 +55,23 @@ func _configure_project() -> void:
 	ProjectSettings.set_setting("environment/defaults/default_clear_color", Color(0.1, 0.1, 0.1, 1))
 
 	ProjectSettings.save()
+
+
+func _init_submodules() -> void:
+	var dirs: PackedStringArray = DirAccess.get_directories_at("res://")
+	if not "common" in dirs:
+		_add_submodule("App/", "git@github.com:TheDuriel/DurielApp.git")
+
+
+func _add_submodule(path: String, git_address: String) -> void:
+	var real_path: String = ProjectSettings.globalize_path("res://" + path)
+	if DirAccess.dir_exists_absolute(real_path):
+		return
+	var args: Array[String] = ["submodule", "add", git_address, path]
+	var output: Array = []
+	var err: int = OS.execute("git", PackedStringArray(args), output, true, true)
+	print("Setup submodule %s" % path)
+	printt(err, output)
 
 
 func _make_folder(path: String) -> void:
