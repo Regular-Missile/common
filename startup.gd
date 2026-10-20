@@ -60,16 +60,18 @@ func _configure_project() -> void:
 func _init_submodules() -> void:
 	var dirs: PackedStringArray = DirAccess.get_directories_at("res://")
 	if not "common" in dirs:
-		_add_submodule("App/", "git@github.com:TheDuriel/DurielApp.git")
+		_add_submodule("common/", "https://github.com/Regular-Missile/common.git")
+		
 
 
 func _add_submodule(path: String, git_address: String) -> void:
-	var real_path: String = ProjectSettings.globalize_path("res://" + path)
+	var project_dir: String = ProjectSettings.globalize_path("res://")
+	var real_path: String = project_dir.path_join(path)
 	if DirAccess.dir_exists_absolute(real_path):
 		return
-	var args: Array[String] = ["submodule", "add", git_address, path]
+	var args: PackedStringArray = ["-C", project_dir, "submodule", "add", git_address, path]
 	var output: Array = []
-	var err: int = OS.execute("git", PackedStringArray(args), output, true, true)
+	var err: int = OS.execute("git", args, output, true, true)
 	print("Setup submodule %s" % path)
 	printt(err, output)
 
